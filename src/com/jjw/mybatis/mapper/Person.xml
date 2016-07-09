@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- mapper xml file : mapper의 목록 -->
+<!-- 하나의 mapper file은 여러개의 'mapping 구문'을 정의 할 수 있다. -->
+<!-- mapper는 SQL문과 mapping을 정의하고 있다. -->
+
+<!-- XML을 기반으로한 mapping language를 사용함으로써 mybatis가 제공하는 대부분의 특징들을 실현시킬 수 있다. -->
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace는 패키지 경로를 포함한 전체 이름을 가진 구문을 구분하기 위해 필수로 명시해아한다. -->
+<!-- namespace는 'interface 바인딩'을 가능하게 한다. namespace와 'java package의 namespace'를 두면 코드가 깔끔하고 마이바티스의 사용이 향상된다. -->
+<mapper namespace="Person">
+	
+	<!-- 데이터베이스 결과데이터를 객체에 로드하는 방법을 정의 -->
+	<resultMap id="result" type="Person">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+	</resultMap>
+
+	
+	<!-- Person이라는 namespase에서, selectAll 이라는 매핑구문 정의 -->
+	<select id="selectAll" resultMap="result">
+		SELECT * FROM persons;
+	</select>	
+	
+	
+	<!-- select element는 DB에서 data를 가져온다. 가장많이 사용되겠지. -->
+	<!-- 대부분의 app은 data를 수정보다 조회하는 기능이 많으며, mybatis는 data를 조회하고 그 결과를 mapping하는데 집중하고 있다. -->
+	<select id="selectById" parameterType="int" resultMap="result">
+		SELECT * FROM persons WHERE id = #{id}
+	</select>
+	<!-- 위 구문의 이름은 selectById이고, 정수형(int type)의 parameter을 가진다. 결과는 HashMap에 저장된다. -->
+	<!-- #{id} 는 parameter 표기법이다. -->
+	<!-- 이 표기법은 mybatis에게 'PreparedStatement parameter'를 만들도록 한다. JDBC를 사용할때 PreparedStatement에는 "?"형태로 parameter가 전달된다. -->
+	
+	
+	
+
+	<insert id="insert" parameterType="Person" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO persons (name) VALUES (#{name});
+	</insert>
+
+	<update id="update" parameterType="Person">
+		UPDATE persons
+		SET name = #{name}
+		WHERE id = #{id}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		DELETE from persons WHERE id = #{id}
+	</delete>
+
+</mapper>
